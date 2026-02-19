@@ -121,7 +121,6 @@ streamlit run app.py
 ##  Project Structure
 
 ```
-├── train.py
 ├── app.py
 ├── house_price_model.pkl
 ├── requirements.txt
