@@ -1,128 +1,215 @@
-#  House Price Prediction – End-to-End Machine Learning Project
+# 🏠 House Price Prediction – India (Streamlit App)
 
-##  Overview
+A Machine Learning powered web application that predicts **house prices in India** based on basic property features.
 
-This repository contains a complete end-to-end Machine Learning pipeline for predicting house prices using selected structural and location-based features from the **House Price India dataset**.
-
-The project demonstrates real-world ML workflow including:
-
-* Data cleaning
-* Feature selection
-* Exploratory Data Analysis (EDA)
-* Feature engineering
-* Training multiple regression algorithms
-* Model evaluation & comparison
-* Model serialization (.pkl under 25MB)
-* Streamlit deployment
+The application loads a pre-trained model and scaler from a serialized `.pkl` file and performs real-time predictions through an interactive Streamlit interface.
 
 ---
 
-##  Dataset
+## 🚀 Project Overview
 
-**Dataset Used:** House Price India
-**Selected Features:**
+This project:
 
-* `bedrooms`
-* `postal code`
-* `built year`
-* `price` (target variable)
+* Loads a trained regression model (`house_price_model.pkl`)
+* Extracts:
 
-Unnecessary columns were removed to optimize model performance and reduce complexity.
-
----
-
-##  Exploratory Data Analysis (EDA)
-
-The project includes:
-
-* Correlation heatmap
-* Target distribution analysis
-* Bedrooms vs Price relationship
-* Statistical summary
-* Outlier detection using IQR method
-
-EDA helps understand feature impact and data distribution before modeling.
+  * `model`
+  * `scaler`
+* Accepts user inputs via sidebar sliders
+* Computes house age dynamically
+* Scales input features
+* Displays predicted house price in ₹
 
 ---
 
-##  Feature Engineering
+## 🛠 Tech Stack
 
-* Created `house_age = current_year - built_year`
-* Removed duplicates and outliers
-* Handled missing values using median imputation
-* Standardized features using `StandardScaler`
-
----
-
-##  Models Trained
-
-The following regression algorithms were trained and evaluated:
-
-* Linear Regression
-* Ridge Regression
-* Lasso Regression
-* Decision Tree Regressor
-* Random Forest Regressor
-* Gradient Boosting Regressor
-* Support Vector Regressor (SVR)
-* K-Nearest Neighbors Regressor
-
-Evaluation Metrics:
-
-* R² Score
-* MAE (Mean Absolute Error)
-* RMSE (Root Mean Squared Error)
-
-The best-performing model was automatically selected and saved.
-
----
-
-##  Model Optimization
-
-* Reduced feature space
-* Used compressed joblib serialization
-* Ensured final `.pkl` size < 25MB
-
-This makes the model suitable for deployment.
-
----
-
-##  Streamlit Deployment
-
-An interactive Streamlit web application allows users to predict house prices using sliders for:
-
-* Bedrooms
-* Postal Code
-* Built Year
-* Price (reference input)
-
-Run locally:
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
----
-
-##  Tech Stack
-
-* Python
-* Pandas
+* Python 3.9+
+* Streamlit
 * NumPy
 * Scikit-learn
-* Matplotlib
-* Seaborn
 * Joblib
-* Streamlit
 
 ---
 
-##  Project Structure
+## 📂 Project Structure
 
-```
+```bash
 ├── app.py
 ├── house_price_model.pkl
 ├── requirements.txt
-├── README.md
+└── README.md
 ```
+
+---
+
+## 📊 Input Features
+
+The model expects the following features in this exact order:
+
+1. Bedrooms
+2. Postal Code
+3. Built Year
+4. House Age (calculated inside app)
+
+### Derived Feature
+
+```python
+house_age = 2026 - built_year
+```
+
+This ensures the model incorporates property age into prediction.
+
+---
+
+## ⚙️ How It Works
+
+### 1️⃣ Model Loading
+
+The application loads a dictionary object:
+
+```python
+model_dict = joblib.load("house_price_model.pkl")
+```
+
+Which contains:
+
+* `model` → trained regression model
+* `scaler` → fitted preprocessing scaler
+
+---
+
+### 2️⃣ Input Processing
+
+User inputs are collected from sidebar sliders and converted into a NumPy array:
+
+```python
+input_data = np.array([[bedrooms, postal_code, built_year, house_age]])
+```
+
+The data is then scaled using:
+
+```python
+input_scaled = scaler.transform(input_data)
+```
+
+---
+
+### 3️⃣ Prediction
+
+When the user clicks **Predict Price**, the model outputs:
+
+```python
+prediction = model.predict(input_scaled)
+```
+
+Displayed as formatted Indian currency:
+
+```
+₹ 12,34,567
+```
+
+---
+
+### UI Components
+
+✔ Bedrooms slider (1–10)
+✔ Postal Code slider (100000–999999)
+✔ Built Year slider (1950–2025)
+✔ Predict Price button
+✔ Formatted currency output
+
+---
+
+## ▶️ Run Locally
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/your-username/house-price-india.git
+cd house-price-india
+```
+
+### 2️⃣ Create Virtual Environment (Optional)
+
+```bash
+python -m venv venv
+source venv/bin/activate      # Mac/Linux
+venv\Scripts\activate         # Windows
+```
+
+### 3️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4️⃣ Run Streamlit App
+
+```bash
+streamlit run app.py
+```
+
+App will open at:
+
+```
+http://localhost:8501
+```
+
+---
+
+## 📦 Example requirements.txt
+
+```
+streamlit
+numpy
+scikit-learn
+joblib
+```
+
+---
+
+## ☁️ Streamlit Cloud Deployment
+
+To deploy:
+
+1. Push repository to GitHub
+2. Go to Streamlit Cloud
+3. Select repository
+4. Choose `app.py`
+5. Deploy
+
+Ensure:
+
+* `house_price_model.pkl` is inside repository
+* Dependencies are correctly listed
+* Model file size is within deployment limits
+
+---
+
+## 🧠 Model Assumptions
+
+* Postal code impacts pricing significantly
+* House age affects depreciation
+* Bedrooms correlate with property value
+* Inputs are scaled before prediction
+
+---
+
+## ⚠️ Limitations
+
+* No EDA dashboard
+* No feature importance visualization
+* No confidence interval provided
+* No validation metrics displayed
+* Year is hardcoded as 2026 for age calculation
+
+---
+
+## 👨‍💻 Author
+
+Aanjney Kumawat
+Machine Learning & Data Science Enthusiast
+Experienced in ML deployment, Python, SQL, and analytics
+
+---
